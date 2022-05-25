@@ -5,7 +5,7 @@ const Home = () => {
     const [food,setFood] = useState([])
     useEffect(()=> {
 
-        axios.get("http://localhost:8000/api/meals")
+        axios.get("http://localhost:8000/api/items")
             .then((res)=>{
                 console.log(res.data)
                 setFood(res.data)
@@ -24,8 +24,8 @@ const Home = () => {
                 </div>
             ))
         }
-        <h1>Meals</h1>
-        
+        <h1>Items</h1>
+
         </>
     )
 }

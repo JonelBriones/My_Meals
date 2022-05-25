@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Meals = new mongoose.Schema({
+const Items = new mongoose.Schema({
     name: {
         type: String,
         required: [true, "Enter Product Name"]
@@ -22,4 +22,4 @@ const Meals = new mongoose.Schema({
 }, {timestamps: true});
  
 
-module.exports = mongoose.model('Meals', Meals);
+module.exports = mongoose.model('Items', Items);

@@ -1,11 +1,12 @@
 import React, {useState,useEffect} from 'react'
 import axios from "axios";
-import CreateMeal from "../components/CreateMeal";
+import CreateItem from "../components/CreateItem";
 import { useNavigate, Link } from 'react-router-dom';
-const AddMeal = () => {
+const AddItem = () => {
+    const [exist,setExist] = useState("")
     const navigate = useNavigate()
     const [errors,setErrors] = useState({})
-    const [meal,setMeal] = useState([{
+    const [item,setItem] = useState([{
         carbs: "",
         proteins: "",
         fats: "",
@@ -14,12 +15,28 @@ const AddMeal = () => {
         measurement: ""
 
     }])
-    const onSubmitHandler = (e) => {
-        e.preventDefault()
-        axios.post("http://localhost:8000/api/meal",meal)
+    const [itemExist,setItemExist] = useState([])
+    useEffect(()=> {
+
+        axios.get("http://localhost:8000/api/items")
             .then((res)=>{
                 console.log(res.data)
-                setMeal({
+                setItemExist(res.data)
+            })
+            .catch((err)=>console.log(err))
+    },[])
+    const onSubmitHandler = (e) => {
+        e.preventDefault()
+        const foodExist = itemExist.find((oneItem)=>item.name === oneItem.name)
+        console.log("Duplicate",item.name)
+        if(foodExist) {
+            // setItem({name:""})
+            return setExist("This product has already been added!")
+        } else setExist("")
+        axios.post("http://localhost:8000/api/item",item)
+            .then((res)=>{
+                console.log(res.data)
+                setItem({
                     carbs: "",
                     proteins: "",
                     fats: "",
@@ -35,23 +52,26 @@ const AddMeal = () => {
                 setErrors(err.response.data.errors)
             })
     }
+
     const onChangeHandler = (e) => {
-        const newMeal = {...meal}
-        newMeal[e.target.name] = e.target.value;
-        console.log(newMeal)
-        setMeal(newMeal)
+        const newItem = {...item}
+        newItem[e.target.name] = e.target.value;
+        console.log(newItem)
+        setItem(newItem)
     }
+
     return (
         <>
         <Link to={"/home"}><button>Go Back</button></Link>
-        <CreateMeal
-        meal={meal}
+        <CreateItem
+        item={item}
         onChangeHandler={onChangeHandler}
         onSubmitHandler={onSubmitHandler}
         errors={errors}
         buttonText={"Add"}
+        exist={exist}
         />
         </>
     )
 }
-export default AddMeal;
+export default AddItem;
